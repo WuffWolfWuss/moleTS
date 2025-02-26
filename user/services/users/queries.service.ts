@@ -3,6 +3,7 @@ const DbMixin = require("moleculer-db");
 const userModel = require("../../schema/user");
 import { ServiceSchema } from "moleculer";
 import { DbServiceSettings } from "moleculer-db";
+import DbConnectionMixin from "../../mixins/db.mixin";
 
 require("dotenv").config();
 
@@ -17,9 +18,9 @@ const findUser = require("./queries/find");
 
 const UserQueryService: ServiceSchema<UserSettings> = {
 	name: "users.queries",
-	mixins: [DbMixin],
-	adapter: new MongooseAdapter(process.env.MONGO_URI),
-	model: userModel,
+	mixins: [
+		DbConnectionMixin({ mongoUri: process.env.MONGO_URI, model: userModel }),
+	],
 
 	actions: {
 		find: findUser,
