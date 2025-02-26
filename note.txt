@@ -1,0 +1,12 @@
+- User submits a review (rating: 4.0) for movie_id: 123 via ReviewService.
+
+- ReviewService saves the review and emits a ReviewCreated event with { movie_id: 123, rating: 4.0 }.
+
+- RatingService picks up the event:
+    Current state (cached or queried): total_rating_sum = 20.0, review_count = 5.
+    New state: total_rating_sum = 24.0, review_count = 6.
+    New average_rating = 24.0 / 6 = 4.0.
+
+- RatingService pushes { movie_id: 123, average_rating: 4.0, review_count: 6 } to MovieService.
+
+- MovieService updates its fields.

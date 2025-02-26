@@ -60,6 +60,27 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 				},
 			},
 			{
+				path: "/review",
+
+				whitelist: ["**"],
+
+				mergeParams: true,
+				authentication: true,
+				authorization: false,
+
+				aliases: {
+					"POST /reviews": {}, //Submit a review (requires authentication via UserService).
+					"GET /movies/{movie_id}/reviews": {}, //Fetch all reviews for a movie.
+					"GET /users/{user_id}/reviews": {}, //Fetch all reviews by a user.
+					"PUT /reviews/{review_id}": {}, //Edit a review (only by the original user).
+					"DELETE /reviews/{review_id}": {}, //Delete a review (optional, with authorization checks).
+				},
+				bodyParsers: {
+					json: true,
+					urlencoded: true,
+				},
+			},
+			{
 				name: "need-auth",
 				path: "/",
 
