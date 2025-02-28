@@ -25,6 +25,7 @@ module.exports = {
 		ctx: Context<IRatingPayload, { userId: string }>
 	) {
 		const movie = ctx.params;
+
 		const res = await this.adapter.updateById(movie.movieId, {
 			$set: {
 				audience: movie.audience,

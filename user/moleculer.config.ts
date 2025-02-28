@@ -1,5 +1,8 @@
 import type { BrokerOptions, MetricRegistry, ServiceBroker } from "moleculer";
 import { Errors } from "moleculer";
+import middleware1 from "./middleware/middleware.a";
+import middleware2 from "./middleware/middleware.b";
+import middleware3 from "./middleware/middleware.c";
 
 /**
  * Moleculer ServiceBroker configuration file
@@ -169,7 +172,7 @@ const brokerConfig: BrokerOptions = {
 	},
 
 	// Register custom middlewares
-	middlewares: [],
+	middlewares: [middleware3()],
 
 	// Register custom REPL commands.
 	replCommands: null,

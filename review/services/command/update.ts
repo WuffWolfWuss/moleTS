@@ -8,6 +8,7 @@ module.exports = {
 		reviewText: { type: "string", optional: true },
 		$$strict: "remove",
 	},
+	saga: true,
 	async handler(
 		this: ReviewThis,
 		ctx: Context<IReview & { id: string }, { user: { userId: string } }>
@@ -17,6 +18,7 @@ module.exports = {
 		if (!before) {
 			throw new Error("Review not found");
 		}
+
 		if (before.createdById !== ctx.meta.user.userId) {
 			throw new Error("You are not allowed to update this review");
 		}
@@ -25,7 +27,9 @@ module.exports = {
 		const entity = await this.adapter.updateById(id, obj);
 
 		// Emit event to trigger rating calculation
-		this.broker.emit("review.updated", { movieId: before.movieId });
+		//this.broker.emit("review.updated", { movieId: before.movieId });
+		ctx.call("rating.calcRating", { movieId: before.movieId });
+		ctx.call("reviews.query.fake");
 		return entity;
 	},
 };

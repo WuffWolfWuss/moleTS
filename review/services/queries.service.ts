@@ -11,6 +11,8 @@ import DbConnectionMixin from "../mixins/db.mixin";
 interface ReviewSettings extends DbServiceSettings {}
 
 const findById = require("./query/findById");
+const findByUser = require("./query/findByUser");
+const fake = require("./query/fake");
 
 const ReviewQueryService: ServiceSchema<ReviewSettings> = {
 	name: "reviews.query",
@@ -23,6 +25,8 @@ const ReviewQueryService: ServiceSchema<ReviewSettings> = {
 
 	actions: {
 		findById,
+		findByUser,
+		fake,
 	},
 };
 

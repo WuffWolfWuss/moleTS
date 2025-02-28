@@ -8,17 +8,22 @@ module.exports = {
 		password: { type: "string" },
 		$$strict: "remove",
 	},
+	saga: true,
 	async handler(ctx: Context<IUserLogin>) {
 		const user = ctx.params;
-		const res: IUser = await ctx.broker.call("users.queries.find", {
+		const res: IUser = await ctx.call("users.queries.find", {
 			email: user.email,
 			password: user.password,
 		});
 
-		if (!res._id) {
+		await ctx.call("reviews.query.findByUser", { id: res?._id });
+		await ctx.call("users.command.failed");
+
+		if (!res?._id) {
 			throw new Error("Invalid email or password");
 		}
 
+		ctx.broker.logger.info("Login query completed");
 		const secret: string = process.env.JWT_SECRET as string;
 		const token: string = AuthenticationUtility.jwtSign(secret, {
 			userId: res._id,

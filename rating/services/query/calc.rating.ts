@@ -33,9 +33,7 @@ module.exports = {
 		});
 
 		// Call MovieService to update the movie's ratings
-		await ctx.call("movie.command.updateRating", result).catch((err) => {
-			this.logger.error(err);
-		});
+		await ctx.call("movie.command.updateRating", result);
 		return result;
 	},
 };

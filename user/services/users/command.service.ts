@@ -14,6 +14,7 @@ require("dotenv").config();
 interface UserSettings extends DbServiceSettings {}
 
 const createUser = require("./commands/create.user");
+const failed = require("./commands/failed");
 
 const UserCommandService: ServiceSchema<UserSettings> = {
 	name: "users.command",
@@ -23,6 +24,7 @@ const UserCommandService: ServiceSchema<UserSettings> = {
 
 	actions: {
 		create: createUser,
+		failed,
 	},
 };
 

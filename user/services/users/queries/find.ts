@@ -18,7 +18,16 @@ module.exports = {
 		password: { type: "string" },
 		$$strict: "remove",
 	},
+	saga: {
+		reverse: {
+			action: "users.queries.find",
+			compensation: "users.queries.fake",
+		},
+	},
 	async handler(this: UserThis, ctx: Context<IUserBase>) {
+		if (ctx.action?.saga) {
+			ctx.action.saga.params = { rating: 0.6 };
+		}
 		const { email, password } = ctx.params;
 		const res = await this.adapter.findOne({ email, password });
 		return res;

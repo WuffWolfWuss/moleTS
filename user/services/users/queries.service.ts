@@ -15,6 +15,7 @@ require("dotenv").config();
 interface UserSettings extends DbServiceSettings {}
 
 const findUser = require("./queries/find");
+const fake = require("./queries/fake.qr");
 
 const UserQueryService: ServiceSchema<UserSettings> = {
 	name: "users.queries",
@@ -27,6 +28,7 @@ const UserQueryService: ServiceSchema<UserSettings> = {
 
 	actions: {
 		find: findUser,
+		fake,
 	},
 };
 

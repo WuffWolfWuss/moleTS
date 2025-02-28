@@ -1,4 +1,4 @@
-import { ServiceSchema } from "moleculer";
+import { Context, ServiceSchema } from "moleculer";
 import { DbServiceSettings } from "moleculer-db";
 import DbConnectionMixin from "../mixins/db.mixin";
 const reviewModel = require("../schema/review");
@@ -12,6 +12,7 @@ interface ReviewSettings extends DbServiceSettings {}
 
 const createReview = require("./command/create");
 const updateReview = require("./command/update");
+const reverse = require("./command/reverse.data");
 
 const ReviewCommandService: ServiceSchema<ReviewSettings> = {
 	name: "reviews.command",
@@ -25,6 +26,7 @@ const ReviewCommandService: ServiceSchema<ReviewSettings> = {
 	actions: {
 		create: createReview,
 		update: updateReview,
+		reverse,
 	},
 };
 
