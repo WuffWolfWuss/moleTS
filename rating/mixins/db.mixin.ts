@@ -1,14 +1,11 @@
-import fs from "fs";
 import type { Context, Service, ServiceSchema } from "moleculer";
-import type { DbAdapter, MoleculerDB } from "moleculer-db";
-import DbService from "moleculer-db";
-import MongoDbAdapter from "moleculer-db-adapter-mongo";
 const MongooseAdapter = require("moleculer-db-adapter-mongoose");
 const DbMixin = require("moleculer-db");
 require("dotenv").config();
 
+const reviewModel = require("../schema/review");
+
 export interface DbMixinSettings {
-	mongoUri: string;
 	model: any;
 	readPreference?:
 		| "primary"
@@ -21,19 +18,15 @@ export interface DbMixinSettings {
 const DbConnectionMixin = (settings: DbMixinSettings): ServiceSchema => ({
 	name: "dbmixin",
 	mixins: [DbMixin],
-	adapter: new MongooseAdapter(settings.mongoUri, {
+	adapter: new MongooseAdapter(process.env.MONGO_URI, {
 		useUnifiedTopology: true,
 		useNewUrlParser: true,
-		readPreference: settings.readPreference || "primary",
+		readPreference: "secondaryPreferred",
 	}),
-	model: settings.model,
+	model: reviewModel,
+
 	async started() {
 		await this.adapter.connect();
-		this.logger.info(
-			`Connected to MongoDB with readPreference: ${
-				settings.readPreference || "primary"
-			}`
-		);
 	},
 });
 

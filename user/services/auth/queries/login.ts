@@ -3,6 +3,11 @@ import { IUser, IUserLogin } from "../../../models/user.model";
 import { AuthenticationUtility } from "../../../util/auth.util";
 
 module.exports = {
+	params: {
+		email: { type: "string" },
+		password: { type: "string" },
+		$$strict: "remove",
+	},
 	async handler(ctx: Context<IUserLogin>) {
 		const user = ctx.params;
 		const res: IUser = await ctx.broker.call("users.queries.find", {

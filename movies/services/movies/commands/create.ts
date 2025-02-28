@@ -1,15 +1,22 @@
 import { Context } from "moleculer";
 import { IMovieBase } from "../../../models/movie";
+import { MovieThis } from "../../../models/common";
 
 module.exports = {
-	name: "movie.create",
-	async handler(ctx: Context<IMovieBase, { userId: string }>) {
-		const user = ctx.params;
+	params: {
+		title: { type: "string" },
+		runtime: { type: "number" },
+		releaseDate: { type: "date" },
+		poster: { type: "string", optional: true },
+		$$strict: "remove",
+	},
+	async handler(this: MovieThis, ctx: Context<IMovieBase, { user: any }>) {
+		const movies = ctx.params;
 		const res = await this.adapter.insert({
-			...user,
-			createdById: ctx.meta.userId,
+			...movies,
+			createdById: ctx.meta.user.userId,
 		});
-		ctx.emit("movie.created", res);
+		//ctx.emit("movie.created", res);
 		return res;
 	},
 };

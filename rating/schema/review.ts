@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-const movieSchema = new mongoose.Schema({
-	_id: { type: String, default: randomUUID() }, //use uuid.v7()
+const reviewSchema = new mongoose.Schema({
+	_id: { type: String },
 	movieId: { type: String, require: true },
 	rating: { type: Number, require: true },
 	reviewText: String,
@@ -11,4 +11,4 @@ const movieSchema = new mongoose.Schema({
 	createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Movies", movieSchema);
+module.exports = mongoose.model("Reviews", reviewSchema);

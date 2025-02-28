@@ -13,9 +13,14 @@ interface UserThis extends Service<UserSettings>, MoleculerDbMethods {
 }
 
 module.exports = {
+	params: {
+		email: { type: "string" },
+		password: { type: "string" },
+		$$strict: "remove",
+	},
 	async handler(this: UserThis, ctx: Context<IUserBase>) {
 		const { email, password } = ctx.params;
-		const res = await this.adapter.findOne({ query: { email, password } });
+		const res = await this.adapter.findOne({ email, password });
 		return res;
 	},
 };

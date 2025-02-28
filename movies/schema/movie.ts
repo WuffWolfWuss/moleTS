@@ -1,13 +1,16 @@
 import mongoose from "mongoose";
-import { randomUUID } from "crypto";
+import { v7 as uuid } from "uuid";
 
-const movieRatingSchema = new mongoose.Schema({
-	rating: Number,
-	numReviews: { type: Number, default: 0 },
-});
+const movieRatingSchema = new mongoose.Schema(
+	{
+		rating: Number,
+		numReviews: { type: Number, default: 0 },
+	},
+	{ _id: false }
+);
 
 const movieSchema = new mongoose.Schema({
-	_id: { type: String, default: randomUUID() },
+	_id: { type: String, default: uuid() },
 	title: { type: String, require: true },
 	runtime: Number,
 	releaseDate: Date,
@@ -17,6 +20,7 @@ const movieSchema = new mongoose.Schema({
 
 	audience: { type: movieRatingSchema },
 
+	createdById: String,
 	createdAt: { type: Date, default: Date.now },
 });
 

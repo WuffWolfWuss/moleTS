@@ -1,8 +1,4 @@
-import fs from "fs";
 import type { Context, Service, ServiceSchema } from "moleculer";
-import type { DbAdapter, MoleculerDB } from "moleculer-db";
-import DbService from "moleculer-db";
-import MongoDbAdapter from "moleculer-db-adapter-mongo";
 const MongooseAdapter = require("moleculer-db-adapter-mongoose");
 const DbMixin = require("moleculer-db");
 require("dotenv").config();

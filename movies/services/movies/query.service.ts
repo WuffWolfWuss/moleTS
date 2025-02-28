@@ -11,7 +11,7 @@ import { DbServiceSettings } from "moleculer-db";
 
 interface UserSettings extends DbServiceSettings {}
 
-const findOne = require("./queries/findOne");
+const findById = require("./queries/findOne");
 
 const UserQueryService: ServiceSchema<UserSettings> = {
 	name: "movie.query",
@@ -20,7 +20,7 @@ const UserQueryService: ServiceSchema<UserSettings> = {
 	model: userModel,
 
 	actions: {
-		findOne,
+		findById,
 	},
 };
 

@@ -1,8 +1,14 @@
+export enum EUserRole {
+	CRITIC = "CRITIC",
+	AUDIENCE = "AUDIENCE",
+	ADMIN = "ADMIN",
+}
+
 export interface IReviewBase {
 	movieId: string;
 	rating: number;
 	reviewText: string;
-	userRole: string;
+	userRole: EUserRole;
 
 	createdAt: Date;
 	createdById: string;

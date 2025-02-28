@@ -1,10 +1,12 @@
+import { Context } from "moleculer";
+
 module.exports = {
-	async handler(this: any, ctx: Context<any>) {
-		const { movie_id } = ctx.params;
+	async handler(ctx: Context<any>) {
+		const { movieId } = ctx.params;
 
 		const stats: { _id: String; avgRating: number; reviewCount: number }[] =
 			await this.adapter.model.aggregate([
-				{ $match: { movie_id } },
+				{ $match: { movieId } },
 				{
 					$group: {
 						_id: "$userRole",
@@ -15,24 +17,25 @@ module.exports = {
 			]);
 
 		const result = {
-			movie_id,
-			audience: { rating: 0, number_of_reviews: 0 },
-			critic: { rating: 0, number_of_reviews: 0 },
+			movieId,
+			audience: { rating: 0, numReviews: 0 },
+			critic: { rating: 0, numReviews: 0 },
 		};
 
 		stats.forEach((stat) => {
-			if (stat._id === "Audience") {
+			if (stat._id === "AUDIENCE") {
 				result.audience.rating = Number(stat.avgRating.toFixed(2));
-				result.audience.number_of_reviews = stat.reviewCount;
-			} else if (stat._id === "Critic") {
+				result.audience.numReviews = stat.reviewCount;
+			} else if (stat._id === "CRITIC") {
 				result.critic.rating = Number(stat.avgRating.toFixed(2));
-				result.critic.number_of_reviews = stat.reviewCount;
+				result.critic.numReviews = stat.reviewCount;
 			}
 		});
 
 		// Call MovieService to update the movie's ratings
-		await ctx.call("movie.updateRatings", result);
-
+		await ctx.call("movie.command.updateRating", result).catch((err) => {
+			this.logger.error(err);
+		});
 		return result;
 	},
 };

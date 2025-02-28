@@ -1,6 +1,6 @@
 import { Errors, ServiceBroker } from "moleculer";
 import type { ServiceSchema } from "moleculer";
-import TestService from "../../../services/greeter.service";
+import TestService from "../../../services/rating.service";
 
 describe("Test 'greeter' service", () => {
 	const broker = new ServiceBroker({ logger: false });
@@ -23,7 +23,9 @@ describe("Test 'greeter' service", () => {
 		});
 
 		test("should reject an ValidationError", async () => {
-			await expect(broker.call("greeter.welcome")).rejects.toThrow(Errors.ValidationError);
+			await expect(broker.call("greeter.welcome")).rejects.toThrow(
+				Errors.ValidationError
+			);
 		});
 	});
 });

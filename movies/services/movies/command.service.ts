@@ -12,6 +12,7 @@ import { DbServiceSettings } from "moleculer-db";
 interface UserSettings extends DbServiceSettings {}
 
 const create = require("./commands/create");
+const updateRating = require("./commands/update.rating");
 
 const UserCommandService: ServiceSchema<UserSettings> = {
 	name: "movie.command",
@@ -21,6 +22,7 @@ const UserCommandService: ServiceSchema<UserSettings> = {
 
 	actions: {
 		create,
+		updateRating,
 	},
 };
 

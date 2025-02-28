@@ -15,7 +15,14 @@ import { AuthenticationUtility } from "../util/auth.util";
 
 interface Meta {
 	userAgent?: string | null | undefined;
-	user?: object | null | undefined;
+	user?: UserMeta | null | undefined;
+}
+
+interface UserMeta {
+	userId: String;
+	userEmail: String;
+	role: String;
+	name: String;
 }
 
 interface GatewaySettings extends ServiceSettingSchema {}
@@ -43,7 +50,7 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 
 				mergeParams: true,
 				authentication: true,
-				authorization: false,
+				authorization: "adminAuth",
 
 				aliases: {
 					"POST /movie": "movie.command.create",
@@ -60,7 +67,26 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 				},
 			},
 			{
-				path: "/review",
+				path: "/movies",
+
+				whitelist: ["**"],
+
+				mergeParams: true,
+				authentication: false,
+				authorization: false,
+
+				aliases: {
+					"POST /": "movie.command.create",
+					"GET /:id": "movie.query.findById",
+					"GET /": "movie.query.find",
+				},
+				bodyParsers: {
+					json: true,
+					urlencoded: true,
+				},
+			},
+			{
+				path: "/reviews",
 
 				whitelist: ["**"],
 
@@ -69,46 +95,25 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 				authorization: false,
 
 				aliases: {
-					"POST /reviews": {}, //Submit a review (requires authentication via UserService).
+					"POST /": "reviews.command.create",
+					"PUT /:id": "reviews.command.update",
 					"GET /movies/{movie_id}/reviews": {}, //Fetch all reviews for a movie.
 					"GET /users/{user_id}/reviews": {}, //Fetch all reviews by a user.
-					"PUT /reviews/{review_id}": {}, //Edit a review (only by the original user).
 					"DELETE /reviews/{review_id}": {}, //Delete a review (optional, with authorization checks).
 				},
 				bodyParsers: {
 					json: true,
 					urlencoded: true,
 				},
-			},
-			{
-				name: "need-auth",
-				path: "/",
 
-				whitelist: ["**"],
-
-				mergeParams: true,
-				authentication: true,
-				authorization: true,
-				autoAliases: true,
-
-				aliases: {
-					"GET /view": async function (req, res) {
-						res.end(`Caculator called.`);
-					},
-				},
-				bodyParsers: {
-					json: {
-						strict: false,
-						limit: "1MB",
-					},
-					urlencoded: {
-						extended: true,
-						limit: "1MB",
-					},
+				onError(req, res, err) {
+					res.setHeader("Content-Type", "text/plain");
+					res.writeHead(501);
+					res.end("error: " + err.message);
 				},
 			},
 			{
-				name: "public",
+				//name: "public",
 				path: "/",
 
 				whitelist: ["**"],
@@ -119,15 +124,6 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 				autoAliases: true,
 
 				aliases: {
-					"GET /hello": "echo.test",
-					"GET /hi": async function (req, res) {
-						const result: number = await req.$service.broker.call(
-							"caculator.sum",
-							{ a: 7, b: 3 }
-						);
-						res.end(`Caculator called. Result is ${result}`);
-					},
-					"POST /data": "greeter.hello",
 					"POST /register": "users.command.create",
 					"POST /login": "auth.queries.login",
 				},
@@ -235,7 +231,6 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 		authorize(ctx: Context<null, Meta>, route: Route, req: IncomingRequest) {
 			// Get the authenticated user.
 			const user = ctx.meta.user;
-			console.log("USER", user);
 
 			// It check the `auth` property in action schema.
 			if (!user) {
@@ -245,6 +240,14 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 
 		adminAuth(ctx: Context<null, Meta>, route: Route, req: IncomingRequest) {
 			const user = ctx.meta.user;
+
+			if (!user) {
+				throw new ApiGateway.Errors.UnAuthorizedError("NO_RIGHTS", null);
+			}
+
+			if (user.role !== "ADMIN") {
+				throw new ApiGateway.Errors.UnAuthorizedError("NO_RIGHTS", null);
+			}
 		},
 	},
 };

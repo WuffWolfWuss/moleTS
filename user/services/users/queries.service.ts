@@ -19,7 +19,10 @@ const findUser = require("./queries/find");
 const UserQueryService: ServiceSchema<UserSettings> = {
 	name: "users.queries",
 	mixins: [
-		DbConnectionMixin({ mongoUri: process.env.MONGO_URI, model: userModel }),
+		DbConnectionMixin({
+			mongoUri: process.env.MONGO_URI as string,
+			model: userModel,
+		}),
 	],
 
 	actions: {
